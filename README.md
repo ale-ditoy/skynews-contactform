@@ -21,6 +21,12 @@ they need help for a contact formular:
 
 ### create the new form (novembre 2016)
 
+- bootstrap for the form
+- keep as much css as possible from the main site
+- add a poorman captcha
+- bootstrap 4 (alpha)
+- bootstrap-validator
+
 - 9-12: 2.5h
 - 14-17:30: 3.5
 - 14:30-17:00: 2.5
