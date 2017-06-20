@@ -14,6 +14,10 @@ if ($today->format('j') > 10) {
     $aboEnd->add(new DateInterval('P1Y'));
 }
 
+/**
+ * poor man captcha keep the latest five generated codes in a text file and check if the captcha
+ * typed by the user is among them
+ */
 $catchaFile = 'captcha-archive.txt';
 if (file_exists($catchaFile)) {
     $captchaArchive = json_decode(file_get_contents('captcha-archive.txt'));
@@ -34,92 +38,75 @@ file_put_contents($catchaFile, json_encode($captchaArchive));
 $htmlLayout = <<<'EOT'
 <!doctype html>
 <html lang="de-CH">
- <head>
-  <meta charset=utf-8>
-  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
-  <meta name="generator" content="2015.2.1.352"/>
-  <title>Abonnieren</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <!-- CSS -->
-  <link rel="stylesheet" type="text/css" href="css/site_global.css?crc=4025139942"/>
-  <link rel="stylesheet" type="text/css" href="css/master_a-master.css?crc=3978870801"/>
-  <link rel="stylesheet" type="text/css" href="css/abonnieren.css?crc=159739323" id="pagesheet"/>
-  <!-- Other scripts -->
-  <script type="text/javascript">
-   var __adobewebfontsappname__ = "muse";
-</script>
-  <!-- JS includes -->
-  <script type="text/javascript">
-   document.write('\x3Cscript src="' + (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//webfonts.creativecloud.com/montserrat:n4:all.js" type="text/javascript">\x3C/script>');
-</script>
-  <!--[if lt IE 9]>
-  <script src="scripts/html5shiv.js?crc=4241844378" type="text/javascript"></script>
-  <![endif]-->
+  <head>
+    <meta charset=utf-8>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+    <meta name="generator" content="2015.2.1.352"/>
+    <title>Abonnieren</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        background-color:transparent;
-    }
-    h2 {
-        font-size: 20px;
-        color: #0071BC;
-        font-weight: 700;
-        margin-bottom:20px;
-    }
-    div.row p {
-        margin-bottom:1rem;
-    }
-    div.footer p {
-        color: #ffffff;
-    }
-    div.footer div.clearfix {
-        left: 0px !important;
-    }
-    div.footer div.Bodytext {
-        margin-top: 46px;
-    }
-    
-    #captcha-original {
-        font-size:21pt;
-    }
+      body {
+          background-color:transparent;
+      }
+      h2 {
+          font-size: 20px;
+          color: #0071BC;
+          font-weight: 700;
+          margin-bottom:20px;
+      }
+      div.row p {
+          margin-bottom:1rem;
+      }
+      div.footer p {
+          color: #ffffff;
+      }
+      div.footer div.clearfix {
+          left: 0px !important;
+      }
+      div.footer div.Bodytext {
+          margin-top: 46px;
+      }
 
+      #captcha-original {
+          font-size:21pt;
+      }
 
-    .skynews-header {
-      text-align:center;
-      padding-top:25px;
-      padding-bottom:25px;
-    }
+      .skynews-header {
+        text-align:center;
+        padding-top:25px;
+        padding-bottom:25px;
+      }
 
-    .skynews-navigation {
-      min-height:58px;
-      background-color:#212121;
-    }
+      .skynews-navigation {
+        min-height:58px;
+        background-color:#212121;
+      }
 
-    .skynews-content {
-      padding-top:25px;
-    }
+      .skynews-content {
+        padding-top:25px;
+      }
 
-    .skynews-footer {
-      min-height: 136px;
-      margin-top: 44px;
-      background-color:#212121;
-    }
-    .skynews-footer p {
-      padding-top:46px;
-      padding-left:120px;
-      font-family: montserrat, sans-serif;
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 1.5;
-      color:white;
-    }
+      .skynews-footer {
+        min-height: 136px;
+        margin-top: 44px;
+        background-color:#212121;
+      }
+      .skynews-footer p {
+        padding-top:46px;
+        padding-left:120px;
+        font-family: montserrat, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.5;
+        color:white;
+      }
 
-    .skynews-footer p a {
-      color:#19D4DB;
-    }
-
-   </style>
-   </head>
- <body>
+      .skynews-footer p a {
+        color:#19D4DB;
+      }
+    </style>
+  </head>
+  <body>
   <div class="container">
     <div class="row skynews-header">
       <div class="col">
@@ -154,15 +141,18 @@ $htmlLayout = <<<'EOT'
 
 document.addEventListener('DOMContentLoaded', function() {jQuery('#abonieren').validator()}, false);
 
+/**
+ * simple home made captcha
+ */
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 $(function() {
     var colours = ["#000000", "#FF0000", "#990066", "#FF9966", "#996666", "#00FF00", "#CC9933"];
-    var div = $('#captcha-original'); 
+    var div = $('#captcha-original');
     var chars = div.text().split('');
-    div.html('');     
+    div.html('');
     for(var i=0; i<chars.length; i++) {
         idx = getRandom(0, colours.length - 1);
         var span = $('<span>' + chars[i] + '</span>').css("color", colours[idx]).css("transform", "rotate("+getRandom(-30, 30)+"deg)").css('display', 'inline-block').css('padding-right', '2pt');
@@ -192,7 +182,7 @@ $htmlContent = <<<'EOT'
         <input class="form-check-input" type="radio" name="abo" value="Normal" required>
         <strong>SkyNews.ch</strong> (Print)<br>
         CHF 85.- / EUR 75.-<br>
-        12 x SkyNews.ch + 1 x skyheli.ch + 1x Kalender SkyAction<br>
+        12 x SkyNews.ch + 1x Kalender SkyAction<br>
         </label>
     </div>
     <div class="form-check">
@@ -216,9 +206,20 @@ $htmlContent = <<<'EOT'
         <input class="form-check-input" type="radio" name="abo" value="Combi" required>
         <strong>SkyNews.ch Kombi-Abo</strong> (Print)<br>
         CHF 96.- / EUR 85.-<br>
-        12 x SkyNews.ch + 1 x skyheli.ch + 1 x Schweizer Luftwaffe + 1 x Kalender SkyAction
+        12 x SkyNews.ch + 1 x Schweizer Luftwaffe + 1 x Kalender SkyAction
         </label>
     </div>
+    <div class="form-check">
+        <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="abo" value="Print-App-Heli" required>
+        <strong>SkyNews.ch</strong> (Print/App) und <strong>Helico-Skyheli</strong><br>
+        CHF 99 / EUR 99 (nur bis Ende 2017)<br>
+        12x SkyNews.ch + 6 x Helico-Skyheli + 1x Kalender SkyAction
+        </label>
+    </div>
+
+
+
 </fieldset>
 
 <fieldset class="form-group">
