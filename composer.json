@@ -1,0 +1,10 @@
+{
+    "name": "ditoy/skynews-contactform",
+    "authors": [
+        {
+            "name": "alessandro rimoldi",
+            "email": "rimoldi@ditoy.com"
+        }
+    ],
+    "require": {}
+}
