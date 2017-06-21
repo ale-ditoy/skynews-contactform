@@ -211,7 +211,7 @@ $htmlContent = <<<'EOT'
     </div>
     <div class="form-check">
         <label class="form-check-label">
-        <input class="form-check-input" type="radio" name="abo" value="Print-App-Heli" required>
+        <input class="form-check-input" type="radio" name="abo" value="Top-Heli-Abo" required>
         <strong>SkyNews.ch</strong> (Print/App) und <strong>Helico-Skyheli</strong><br>
         CHF 99 / EUR 99 (nur bis Ende 2017)<br>
         12x SkyNews.ch + 6 x Helico-Skyheli + 1x Kalender SkyAction
